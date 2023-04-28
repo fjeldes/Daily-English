@@ -1,14 +1,13 @@
 package com.example.dailyenglish
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.example.dailyenglish.Models.Database
-import com.example.dailyenglish.Models.Word
-import io.realm.kotlin.Realm
-import io.realm.kotlin.RealmConfiguration
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
+import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,7 +20,22 @@ class MainActivity : AppCompatActivity() {
         cardViewWordDay.setOnClickListener {
             startActivity(Intent(this, WordDay::class.java))
         }
+        val fileInString: String =
+            applicationContext.assets.open("word_example.json").bufferedReader().use { it.readText() }
 
-     // Database.write()
+        val resp: JsonObject = JsonParser().parse(fileInString).asJsonObject
+        val jsonObject = JsonObject()
+        jsonObject.add("data", resp)
+
+
+        val objects = JSONObject(fileInString)
+        val key = objects.names()
+        for (i in 0 until key.length()) {
+            val key = key.getString(i)
+            val value = objects.getString(key)
+            println("crespo:$key")
+            println("polaco:$value")
+            Database.write(key,value)
+        }
     }
 }

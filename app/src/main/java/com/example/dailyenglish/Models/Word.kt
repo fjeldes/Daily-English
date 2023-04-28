@@ -21,13 +21,13 @@ object Database {
         .build()
     val realm = Realm.open(config)
 
-    fun write(){
+    fun write(key: String, value: String){
         val word = Word().apply {
-            word = "Dog"
-            example = "Pet"
+            word = key
+            example = value
         }
 
-        val manageWord = realm.writeBlocking { copyToRealm(word) }
+        realm.writeBlocking { copyToRealm(word) }
     }
 
     suspend  fun writeAsync(){
